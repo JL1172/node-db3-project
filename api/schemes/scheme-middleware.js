@@ -49,8 +49,8 @@ const validateScheme = async (req, res, next) => {
 */
 const validateStep = async (req, res, next) => {
   try {
-    const {instructions} = req.body;
-    if (!instructions || typeof instructions !== "string") {
+    const {instructions,step_number} = req.body;
+    if ((!instructions || typeof instructions !== "string") || typeof step_number !== "number" || step_number < 1) {
       next({status : 400, message : "invalid step"})
     } else {
       next(); 
