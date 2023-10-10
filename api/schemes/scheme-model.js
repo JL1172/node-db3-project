@@ -164,6 +164,8 @@ order by step_number asc;
 }
 
 async function add(scheme) { // EXERCISE D
+  const created = await db("schemes").insert(scheme);
+  return await db("schemes").where({scheme_id : created[0]}).first();
   /*
     1D- This async function creates a new scheme and resolves to _the newly created scheme_.
   */
