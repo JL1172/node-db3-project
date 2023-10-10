@@ -43,7 +43,7 @@ join shipper as s
 on o.shipvia=s.id
 group by s.id;
 
---Find the top 5 best performing employees measured in number of orders.
+-- Find the top 5 best performing employees measured in number of orders.
 select 
 e.id,
 e.firstname || ' ' || e.lastname as EmployeeName,
@@ -68,7 +68,7 @@ join orderdetail on o.id=orderdetail.orderid
 group by e.id order by (revenue) desc limit 5;
 
 
---Find the category that brings in the least revenue.
+-- Find the category that brings in the least revenue.
 select 
 c.id as categoryid,
 sum(o.quantity * o.UnitPrice) as revenue
@@ -78,3 +78,39 @@ on c.id=p.CategoryId
 join orderdetail as o
 on o.productid=p.id
 group by c.id limit 1;
+
+-- Find the customer country with the most orders.
+select
+count(c.country) as OrdersFromCountry,
+c.id as companyid,
+c.companyname,
+c.country,
+o.shipcountry
+from customer as c 
+join orders as o
+on o.CustomerId=c.id
+group by c.country
+order by (ordersfromcountry) desc limit 1;
+
+-- Find the shipper that moves the most cheese measured in units.
+select 
+count(quantity) as quantity,
+s.id as shipper_id,
+s.companyname as shipper_company_name,
+o.shipvia as orders_shipper_id,
+o.id as orders_id,
+ord.orderid as order_details_orderid,
+ord.productid as order_details_product_id,
+ord.quantity as order_details_quantity,
+p.categoryid as product_categoryid
+from shipper as s join orders as o
+on s.id = o.shipvia 
+join orderdetail as ord 
+on o.id=ord.orderid
+join product as p 
+on p.id = ord.productid
+join category as c on
+p.categoryid = c.id
+where c.id=4
+group by shipper_company_name
+order by (quantity) desc;
