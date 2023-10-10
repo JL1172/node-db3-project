@@ -119,10 +119,32 @@ async function findById(scheme_id) { // EXERCISE B
 }
 
 async function findSteps(scheme_id) { // EXERCISE C
+const resultOfFoundSteps = await db("schemes as sc")
+.leftJoin("steps as st","sc.scheme_id","st.scheme_id")
+.select("step_id","step_number","scheme_name","instructions")
+.where("sc.scheme_id",scheme_id)
+.orderBy("step_number","asc");
+const final = [];
+for (let key of resultOfFoundSteps) {
+  if (key.step_number && key.scheme_name && key.instructions && key.step_id) {
+    final.push(key)
+  }
+}
+return final; 
   /*
     1C- Build a query in Knex that returns the following data.
     The steps should be sorted by step_number, and the array
     should be empty if there are no steps for the scheme:
+select
+step_id,
+step_number,
+scheme_name,
+instructions
+from schemes as sc
+left join steps as st
+on sc.scheme_id = st.scheme_id
+where sc.scheme_id=1
+order by step_number asc;
 
       [
         {
