@@ -32,3 +32,49 @@ e.lastname as employeeLastName
 from employee as e
  join orders as o
 on e.id=o.employeeid; 
+
+-- Find the number of shipments by each shipper.
+select 
+s.id,
+s.companyname,
+count(o.shipvia) as shipmentCount
+from orders as o
+join shipper as s
+on o.shipvia=s.id
+group by s.id;
+
+--Find the top 5 best performing employees measured in number of orders.
+select 
+e.id,
+e.firstname || ' ' || e.lastname as EmployeeName,
+count(o.employeeid) as NumberOfOrders
+from employee as e join 
+orders as o
+on e.id=o.employeeid
+group by (e.id)
+order by (NumberOfOrders) desc limit 5;
+
+-- Find the top 5 best performing employees measured in revenue.
+select 
+e.id,
+e.firstname || ' ' || e.lastname as EmployeeName,
+orderdetail.Quantity,
+sum(orderdetail.quantity * orderdetail.UnitPrice) as revenue,
+o.id as orderId
+from employee as e 
+join orders as o
+on e.id=o.employeeid
+join orderdetail on o.id=orderdetail.orderid
+group by e.id order by (revenue) desc limit 5;
+
+
+--Find the category that brings in the least revenue.
+select 
+c.id as categoryid,
+sum(o.quantity * o.UnitPrice) as revenue
+from category as c
+join product as p
+on c.id=p.CategoryId
+join orderdetail as o
+on o.productid=p.id
+group by c.id limit 1;
